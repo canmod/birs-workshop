@@ -1,0 +1,315 @@
+---
+title: "Modular Compartmental Modelling as Data Prep"
+format: 
+  revealjs:
+    code-line-numbers: false
+---
+
+```{r, echo=FALSE}
+library(macpan2)
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "",
+  echo = TRUE
+)
+```
+
+
+## Story
+
+* I'm a public health modeller who has something working already
+* But the situation gets more complicated and I need to pivot
+* ...
+
+## Model Development Cycle
+
+* In the old days ...
+
+## Diagram of what Macpan Does
+
+* 
+
+## Foundational Entities
+
+* State variables (e.g. S, I, R)
+* Flow rates (e.g. $\lambda = \frac{\beta I}{N}$, $\gamma$)
+
+```{dot}
+//| fig-height: 2
+digraph G {
+  layout=dot
+  rankdir="LR"
+  
+  node [margin=0 fontcolor=blue fontname="Courier New" width=0.5]
+  edge [fontcolor=blue fontname="Courier New"]
+  
+  S->I [label=<&lambda;*S>];
+  I->R [label=<&gamma;*I>];
+}
+```
+
+
+## Standard Quantities
+
+::: {.incremental}
+* State variables ($S$, $I$, $R$)
+* Aggregations ($N = S + I + R$)
+* Influence rates ($\beta$)
+* Flow rates ($\lambda = \frac{\beta I}{N}$, $\gamma$)
+:::
+
+```{dot}
+//| fig-height: 2
+digraph G {
+  layout=dot
+  rankdir="LR"
+  
+  
+  node [fontcolor=blue fontname="Courier New"]
+  edge [fontcolor=blue fontname="Courier New"]
+  
+  SI [label=<&lambda;*S> shape=plaintext]
+  IR [label=<&gamma;*I> shape=plaintext]
+  
+  S:e->SI:w [arrowhead=none]
+  SI:e->I:w 
+  I:e->IR:w [arrowhead=none]
+  IR:e->R:w
+  I:s->SI:s [label=<&lambda;=&beta;*I/N> style=dotted]
+}
+```
+
+
+## Indexing Standard Quantities
+
+```{r}
+state_sir = mp_index(Epi = c("S", "I", "R"))
+```
+```{r, echo = FALSE}
+state_sir
+```
+```{r}
+flow_rates_sir = mp_index(Epi = c("lambda", "gamma"))
+```
+```{r, echo = FALSE}
+flow_rates_sir
+```
+```{r}
+trans_rates_sir = mp_index(Epi = c("beta"))
+```
+```{r, echo = FALSE}
+trans_rates_sir
+```
+
+
+## Structured Product Models
+
+::: fragment
+```{r}
+cities = mp_index(Loc = c("cal", "ham", "que"))
+```
+:::
+
+::: fragment
+```{r}
+state = mp_cartesian(state_sir, cities)
+```
+```{r, echo = FALSE}
+state
+```
+:::
+
+::: fragment
+```{r, eval = FALSE}
+labels(state)
+```
+```{r, echo = FALSE}
+labels(state)
+```
+:::
+
+## Structured Product Models
+
+```{r}
+flow_rates = mp_cartesian(flow_rates_sir, cities)
+```
+```{r, echo =FALSE}
+flow_rates
+```
+
+## Non-Product Models
+
+```{r}
+flow_rates = mp_union(
+  mp_cartesian(
+    mp_subset(flow_rates_sir, Epi = "lambda"), 
+    cities
+  ),
+  mp_subset(flow_rates_sir, Epi = "gamma")
+)
+```
+```{r, echo =FALSE}
+flow_rates
+```
+
+## Defining Flow Mechanisms
+
+In simple models, defining a flow mechanism take three steps:
+
+1. Choose a `from` compartment
+2. Choose a `to` compartment
+3. Choose a `rate` of flow
+```{dot}
+//| fig-height: 2
+digraph G {
+  layout=dot
+  rankdir="LR"
+  
+  node [margin=0 fontcolor=blue fontname="Courier New" width=0.5]
+  edge [fontcolor=blue fontname="Courier New"]
+  
+  S->I [style=invis];
+  I->R [style=invis];
+}
+```
+
+## Defining Flow Mechanisms
+
+In simple models, defining a flow mechanism take three steps:
+
+1. Choose a `from` compartment (e.g. $S$)
+2. Choose a `to` compartment (e.g. $I$)
+3. Choose a `rate` of flow (e.g. $\lambda = \frac{\beta I}{N}$)
+```{dot}
+//| fig-height: 2
+digraph G {
+  layout=dot
+  rankdir="LR"
+  
+  node [margin=0 fontcolor=blue fontname="Courier New" width=0.5]
+  edge [fontcolor=blue fontname="Courier New"]
+  
+  S->I [label=<&lambda;*S>];
+  I->R [style=invis];
+}
+```
+
+## Defining Flows in Structured Models
+
+```{dot}
+//| fig-height: 4
+digraph G {
+  layout=dot
+  rankdir="LR"
+  
+  node [margin=0 fontcolor=blue fontname="Courier New" width=0.5]
+  edge [fontcolor=blue fontname="Courier New"]
+  
+  S1 [label="S.cal"];
+  I1 [label="I.cal"];
+  R1 [label="R.cal"];
+  
+  S2 [label="S.ham"];
+  I2 [label="I.ham"];
+  R2 [label="R.ham"];
+  
+  S3 [label="S.que"];
+  I3 [label="I.que"];
+  R3 [label="R.que"];
+  
+  S1->I1 [label=<&lambda;&#46;cal*S&#46;cal>];
+  S2->I2 [label=<&lambda;&#46;ham*S&#46;ham>];
+  S3->I3 [label=<&lambda;&#46;que*S&#46;que>];
+  
+  I1->R1 [style=invis];
+  I2->R2 [style=invis];
+  I3->R3 [style=invis];
+}
+```
+
+## Defining Flows in Structured Models
+
+::: fragment
+One more step in structured models.
+:::
+
+::: fragment
+The first three are _similar_.
+
+1. Choose a _set of_ `from` compartments
+2. Choose a _set of_ `to` compartments
+3. Choose a _set of_ `rate`s of flow
+:::
+
+::: fragment
+The last step is new.
+
+4. Match the elements of the `from`, `to`, and `rate` sets
+:::
+
+## Defining Flows in Structured Models
+
+::: {.fragment}
+ 
+```{r}
+mp_subset(state, Epi = "S")
+```
+::: 
+
+
+::: {.fragment}
+ 
+```{r}
+mp_subset(state, Epi = "I")
+```
+:::
+
+::: {.fragment}
+ 
+```{r}
+mp_join(
+  from = mp_subset(state, Epi = "S"), 
+  to = mp_subset(state, Epi = "I"),
+  from.to = "Loc"
+)
+```
+:::
+
+## Defining Flows in Structured Models
+
+ 
+```{r}
+mp_join(
+  from = mp_subset(state, Epi = "S"), 
+  to = mp_subset(state, Epi = "I"),
+  from.to = "Loc"
+)
+```
+
+## Defining Flows in Structured Models
+
+```{r}
+mp_join(
+  from = mp_subset(state, Epi = "S"), 
+  to = mp_subset(state, Epi = "I")
+  # from.to = "Loc"
+)
+```
+
+## Transmission and Influences
+
+```{r}
+trans_rates = mp_cartesian(trans_rates_sir, cities)
+```
+```{r, echo = FALSE}
+trans_rates
+```
+
+
+## Decomposing
+
+```{r}
+
+```
+
+## Spatial Movement Rates
