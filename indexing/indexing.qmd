@@ -1,5 +1,6 @@
 ---
 title: "Modular Compartmental Modelling as Data Prep"
+subtitle: "With implementation in `macpan2`"
 format: 
   revealjs:
     code-line-numbers: false
@@ -14,42 +15,190 @@ knitr::opts_chunk$set(
 )
 ```
 
+## Model Development Cycle
 
-## Story
+![](images/public-health-modelling-cycle.drawio.png)
 
-* I'm a public health modeller who has something working already
-* But the situation gets more complicated and I need to pivot
-* ...
+# McMasterPandemic Project History
+
+## McMasterPandemic COVID-19 Model
+
+![](images/flowchart1.png)
+
+::: aside
+[mac-theobio.github.io/covid-19](https://mac-theobio.github.io/covid-19)
+:::
+
+## COVID-19 Vaccination Model
+
+![](images/flowchart2.png){.absolute left=0 width="700"}
+
+::: aside
+[mac-theobio.github.io/covid-19](https://mac-theobio.github.io/covid-19)
+:::
+
+## Forecasting
+
+```{r third_wave, echo = FALSE}
+knitr::include_graphics("images/third_wave_prediction.gif")
+```
+
+::: aside
+[mac-theobio.github.io/forecasts/outputs/ON_accuracy.html](https://mac-theobio.github.io/forecasts/outputs/ON_accuracy.html)
+:::
+
+## Calibration -- Trajectory Matching
+
+::: columns
+::: {.column width="40%"}
+![](images/animation.gif)
+:::
+
+::: {.column width="60%"}
+> -   Toy simulated data example
+> -   "Observed" case reports -- dots
+> -   Model-predicted case reports -- line
+> -   Optimize transmission rate using maximum likelihood
+:::
+:::
+
+## Examples of Usage
+
+-   COVID-19 forecasts for agencies
+    -   Public Health Agency of Canada
+    -   Ontario Science Table
+    -   World Health Organization
+        -   South Africa -- provincial and national level
+        -   Afro-Regional -- 49 countries
+    -   Public Health Ontario
+
+## Examples of Usage
+
+-   Model structures
+    -   Macpan modelling group's base COVID-19 model
+    -   Extensions of macpan -- vaccination, VOC, and waste-water models
+    -   Metapopulation model of Newfoundland -- 1000s of compartments
+    -   Endemic COVID-19 model
+    -   Monkeypox with two risk groups
+
+
+
+## Software Timeline
+
+```         
++-----------+------+-------------------------------------------------------+
+| nickname  | year | description                                           |
++-----------+------+-------------------------------------------------------+
+| macpan1   | 2020 | original covid models in R engine                     |
+| macpan1.5 | 2021 | fast C++ engine and flexibility for VOC modelling     |
+| macpan2   | 2023 | general architecture to implement the lessons learned |
++-----------+------+-------------------------------------------------------+
+```
+
+::: aside
+macpan1 = [github.com/mac-theobio/McMasterPandemic/releases/tag/v0.0.20.1](https://github.com/mac-theobio/McMasterPandemic/releases/tag/v0.0.20.1)
+
+macpan1.5 = [github.com/mac-theobio/McMasterPandemic](https://github.com/mac-theobio/McMasterPandemic)
+
+macpan2 = [github.com/canmod/macpan2](https://github.com/canmod/macpan2)
+:::
+
+
+## Lessons -- modeller needs and wants
+
+Biologically principled
+
+Fast simulations and calibrations
+
+Statistically principled
+
+Functionality-rich
+
+::: {.fragment .highlight-red}
+Modular model building
+:::
+
+::: aside
+[canmod.github.io/macpan-book/index.html#vision-and-direction](https://canmod.github.io/macpan-book/index.html#vision-and-direction)
+:::
 
 ## Model Development Cycle
 
-* In the old days ...
+![](images/public-health-modelling-cycle.drawio.png)
 
-## Diagram of what Macpan Does
+## Model Development Cycle
 
-* 
+![](images/public-health-modelling-cycle-highlight.drawio.png)
 
-## Foundational Entities
+# Modular Model Building 
 
-* State variables (e.g. S, I, R)
-* Flow rates (e.g. $\lambda = \frac{\beta I}{N}$, $\gamma$)
+## Modularity Example (in early macpan)
 
-```{dot}
-//| fig-height: 2
-digraph G {
-  layout=dot
-  rankdir="LR"
-  
-  node [margin=0 fontcolor=blue fontname="Courier New" width=0.5]
-  edge [fontcolor=blue fontname="Courier New"]
-  
-  S->I [label=<&lambda;*S>];
-  I->R [label=<&gamma;*I>];
-}
-```
+![](images/flowchart1.png)
+
+## Modularity Example (in early macpan)
+
+![](images/flowchart2.png){.absolute left=0 width="850"}
+
+## Modularity Literature (graph theory)
+
+::: fragment
+![](images/wordenA.png)
+:::
+
+::: fragment
+![](images/wordenB.png)
+:::
 
 
-## Standard Quantities
+::: aside
+Worden and Porco (2017) Products of Compartmental Models in Epidemiology
+:::
+
+## Modularity Literature (graph theory)
+
+
+![](images/wordenC.png){width=50%}
+
+::: aside
+Worden and Porco (2017) Products of Compartmental Models in Epidemiology
+:::
+
+## Modularity Literature (graph theory)
+
+
+![](images/wordenD.png){width=60%}
+
+::: aside
+Worden and Porco (2017) Products of Compartmental Models in Epidemiology
+:::
+
+
+## Modularity Literature (category theory)
+
+![](images/categoryA.png){width=70%}
+
+::: aside
+Compositional Modeling with Stock and Flow Diagrams (2022) Baez et al.
+:::
+
+## Modularity Literature (category theory)
+
+![](images/categoryB.png){width=70%}
+
+::: aside
+Compositional Modeling with Stock and Flow Diagrams (2022) Baez et al.
+:::
+
+
+## Modularity in `macpan2` (with data prep 'theory')
+
+::: {.incremental}
+* Represent structure of model components (e.g. state variables, flow rates) as data tables
+* Use data table manipulation tools (e.g. join, group-by) to combine model structures
+:::
+
+## SIR Example
 
 ::: {.incremental}
 * State variables ($S$, $I$, $R$)
@@ -80,27 +229,34 @@ digraph G {
 ```
 
 
-## Indexing Standard Quantities
+## Expressing SIR in Data Prep Language
 
+::: fragment
 ```{r}
 state_sir = mp_index(Epi = c("S", "I", "R"))
 ```
 ```{r, echo = FALSE}
 state_sir
 ```
+:::
+
+::: fragment
 ```{r}
 flow_rates_sir = mp_index(Epi = c("lambda", "gamma"))
 ```
 ```{r, echo = FALSE}
 flow_rates_sir
 ```
+:::
+
+::: fragment
 ```{r}
 trans_rates_sir = mp_index(Epi = c("beta"))
 ```
 ```{r, echo = FALSE}
 trans_rates_sir
 ```
-
+:::
 
 ## Structured Product Models
 
