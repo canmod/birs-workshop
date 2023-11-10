@@ -4,6 +4,7 @@ subtitle: "With implementation in `macpan2`"
 format: 
   revealjs:
     code-line-numbers: false
+    keep-md: true
 ---
 
 ```{r, echo=FALSE}
@@ -140,7 +141,7 @@ Modular model building
 
 ![](images/flowchart2.png){.absolute left=0 width="850"}
 
-## Modularity Literature (graph theory)
+## Modularity (graph theory)
 
 ::: fragment
 ![](images/wordenA.png)
@@ -155,7 +156,7 @@ Modular model building
 Worden and Porco (2017) Products of Compartmental Models in Epidemiology
 :::
 
-## Modularity Literature (graph theory)
+## Modularity (graph theory)
 
 
 ![](images/wordenC.png){width=50%}
@@ -164,7 +165,7 @@ Worden and Porco (2017) Products of Compartmental Models in Epidemiology
 Worden and Porco (2017) Products of Compartmental Models in Epidemiology
 :::
 
-## Modularity Literature (graph theory)
+## Modularity (graph theory)
 
 
 ![](images/wordenD.png){width=60%}
@@ -174,7 +175,7 @@ Worden and Porco (2017) Products of Compartmental Models in Epidemiology
 :::
 
 
-## Modularity Literature (category theory)
+## Modularity (category theory)
 
 ![](images/categoryA.png){width=70%}
 
@@ -182,7 +183,7 @@ Worden and Porco (2017) Products of Compartmental Models in Epidemiology
 Compositional Modeling with Stock and Flow Diagrams (2022) Baez et al.
 :::
 
-## Modularity Literature (category theory)
+## Modularity (category theory)
 
 ![](images/categoryB.png){width=70%}
 
@@ -191,7 +192,9 @@ Compositional Modeling with Stock and Flow Diagrams (2022) Baez et al.
 :::
 
 
-## Modularity in `macpan2` (with data prep 'theory')
+## Modularity (data prep 'theory')
+
+What we do in `macpan2`
 
 ::: {.incremental}
 * Represent structure of model components (e.g. state variables, flow rates) as data tables
@@ -202,8 +205,8 @@ Compositional Modeling with Stock and Flow Diagrams (2022) Baez et al.
 
 ::: {.incremental}
 * State variables ($S$, $I$, $R$)
-* Aggregations ($N = S + I + R$)
-* Influence rates ($\beta$)
+* State variable aggregation ($N = S + I + R$)
+* Transmission rate ($\beta$)
 * Flow rates ($\lambda = \frac{\beta I}{N}$, $\gamma$)
 :::
 
@@ -452,6 +455,24 @@ mp_join(
 )
 ```
 
+## Defining Flows Comparison
+
+Unstructured Model:
+```{r}
+mp_join(
+  from = mp_subset(state_sir, Epi = "S"), 
+  to   = mp_subset(state_sir, Epi = "I")
+)
+```
+Location-Structured Model:
+```{r}
+mp_join(
+  from = mp_subset(state, Epi = "S"), 
+  to   = mp_subset(state, Epi = "I"),
+  by = "Loc"
+)
+```
+
 ## Transmission and Influences
 
 ```{r}
@@ -469,3 +490,26 @@ trans_rates
 ```
 
 ## Spatial Movement Rates
+
+## Two-Strain Model
+
+```{dot}
+//| fig-height: 2
+digraph G {
+  layout=dot
+  rankdir="LR"
+  
+  
+  node [fontcolor=blue fontname="Courier New"]
+  edge [fontcolor=blue fontname="Courier New"]
+  
+  SIa [label=<&lambda;*S> shape=plaintext]
+  IaR [label=<&gamma;*I> shape=plaintext]
+  
+  S:e->SIa:w [arrowhead=none]
+  SIa:e->Ia:w 
+  Ia:e->IaR:w [arrowhead=none]
+  IaR:e->R:w
+  Ia:s->SIa:s [label=<&lambda;=&beta;*I.A/N> style=dotted]
+}
+```

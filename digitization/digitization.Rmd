@@ -1,0 +1,379 @@
+---
+title: "CANMOD Digitization Project"
+subtitle:  ""
+author: "Steve Walker"
+date: "2023-11-13"
+output: 
+  ioslides_presentation: 
+    widescreen: yes
+logo: images/canmod-icon.png
+---
+
+```{r setup, include=FALSE}
+## NOTE: SW needs to view this file in chrome.
+## firefox doesn't have all the features used.
+## biggest issue is lack of ability to do two columns.
+knitr::opts_chunk$set(echo = FALSE, eval = TRUE)
+```
+
+```{r, message=FALSE}
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+```
+
+<style>
+div.footnotes {
+  position: absolute;
+  bottom: 0;
+  margin-bottom: 30px;
+  margin-left: 70px;
+  width: 80%;
+  font-size: 0.6em;
+}
+</style>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script>
+$(document).ready(function() {
+  $('slide:not(.backdrop):not(.title-slide)').append('<div class=\"footnotes\">');
+
+  $('footnote').each(function(index) {
+    var text  = $(this).html();
+    var fnNum = (index+1).toString();
+    $(this).html(fnNum.sup());
+
+    var footnote   = fnNum + '. ' + text + '<br/>';
+    var oldContent = $(this).parents('slide').children('div.footnotes').html();
+    var newContent = oldContent + footnote;
+    $(this).parents('slide').children('div.footnotes').html(newContent);
+  });
+});
+</script>
+<style>
+.forceBreak { -webkit-column-break-after: always; break-after: column; }
+</style>
+
+# Background
+
+## Systematic Canadian Data Archiving
+
+>- Modelling historical epidemics
+>   - Research area of David Earn for >20 years
+>- Models need data
+>   - Earn-led digitization projects
+>   - Data digitized to support publications
+>   - Data made public
+>- Systematic about Canadian data
+>   - Last 2.5 years
+>   - Not just for particular publications or purposes
+>   - Broad coverage across diseases and provinces
+>   - Inspired by Project Tycho in the US<footnote>https://www.tycho.pitt.edu/</footnote>
+
+## Systematic Canadian Data Archiving
+
+Straightforward and convenient access to historical and publicly available incidence, mortality, and population data:
+
+>- Notifiable Communicable Disease Incidence (CDI) (1924-2000)
+>- Population (1871-present)
+>- Mortality (1950-2010)
+
+## Outline
+
+* Canadian Notifiable Communicable Disease Incidence Data
+* Canadian Population Data
+* Canadian Mortality Data
+* Data Modelling Examples
+
+# Canadian Notifiable Communicable Disease Incidence 
+
+## Canadian Communicable Disease Incidence
+
+![](images/again.png){width=90%}<footnote>https://canmod.net/digitization</footnote>
+
+## Canadian Communicable Disease Incidence
+
+>- 1924-1980 (weekly), 1980-1990 (monthly), 1990-2000 (quarterly)
+>- Broken down by province
+>- Broken down by disease<footnote>https://github.com/davidearn/data_work/blob/main/tracking/disease_coverage_heatmap.png</footnote>
+>- Some diseases broken down by age and sex (before 1956)
+
+## Canadian CDI -- Scans
+
+![](images/scan-aarms-2.png){width=86%}
+
+## Canadian CDI -- Digitized Spreadsheet
+
+![](images/excel-aarms-2.png){width=86%}
+
+## Canadian CDI -- Tidy CSV
+
+![](images/tidy-aarms-2.png){width=90%}
+
+## Canadian CDI -- Harmonized CSV (TODO)
+
+>- Users want things like: "Diphtheria incidence in Canada"
+>    - Longest time-range possible please (1924-2000)
+>    - Shortest intervals possible please (means weekly)
+>- Idiosyncratic historical data
+>    - Need to stitch data sources together
+>    - Disease and place names change over time
+>    - Disease codes change over time
+>    - Hierarchical data (e.g. diseases within families of diseases)
+>    - Inconsistent time periods (e.g. weekly shifts to monthly)
+>    - Age group definitions change over time<footnote>We have used monotonic splines for interpolating cumulative age distributions, and back transforming to get counts in any bin</footnote>
+
+## The Dushoff Plot
+
+* At the Canadian level we have different time scales and different spatial scales
+* We need to divide both by length of time period and population size of the reporting province
+* We first filter out everything that is missing (not available, not reportable, completely gone), but we cannot filter out unclear
+* Filter out nesting_location == Canada
+* Join in population data on year and location
+* Group by period start and end dates and compute aggregate population sizes
+* Join these population sizes back to original table
+
+## Diphtheria
+
+![](images/diphtheria.svg){width=100%}
+
+# Canadian Population Data
+
+## Canadian Population Data Sources
+
+>- Sixth Census of Canada
+>    - population estimates for 1881-1921
+>    - every ten years
+>- StatCan Report: Revised Annual Estimates of Population
+>    - population estimates for 1921-1971
+>    - every year
+>- Population Estimates on July 1st
+>    - current and publicly available on-line
+>    - population estimates for 1971-current
+>    - every year
+
+## Canadian Population Data
+
+![](images/aarms-census.png){width=70%}<footnote>https://publications.gc.ca/site/eng/9.830550/publication.html</footnote>
+
+## Canadian Population Data
+
+![](images/aarms-census-data.png){width=50%}<footnote>https://publications.gc.ca/site/eng/9.830550/publication.html</footnote>
+
+## Canadian Population Data
+
+![](images/aarms-pop-can-1921-71.png){width=90%}<footnote>https://publications.gc.ca/site/eng/9.817507/publication.html</footnote>
+
+## Canadian Population Data
+
+![](images/aarms-1921-pop.png){width=90%}
+
+## Canadian Population Data
+
+![](images/aarms-statcan-pop-portal.png){width=90%}<footnote>https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1710000501</footnote>
+
+## Canadian Population
+
+![](images/pop-can.svg){width=100%}
+
+## Newfoundland Population
+
+![](images/pop-nfld.svg){width=100%}
+
+## Yukon Population
+
+![](images/pop-yukon.svg){width=100%}
+
+## Yukon Sex Ratio
+
+![](images/sex-ratio-yukon.svg){width=100%}
+
+## Population of Northwest Territories
+
+![](images/pop-nt-nu.svg){width=100%}
+
+# Canadian Mortality Data
+
+## Canadian Mortality Data
+
+>- 1950-2020
+>- Weekly
+>- Broken down by:
+>    - Province
+>    - Selected cause groups (next slide)
+>- Custom tabulation request to StatCan
+>    - Extends public data portal back from 2010 to 1950<footnote>https://www150.statcan.gc.ca/t1/tbl1/en/tv.action?pid=1310081001</footnote>
+>    - Challenging due to changing disease codes (ICD-6 to ICD-10)
+>    - Counts rounded to multiple of 5 (randomly)
+
+## Canadian Mortality Data (Cause Groups) {.columns-2}
+
+* Total causes
+* Malignant neoplasms
+* Diabetes mellitus                          
+* Diseases of the heart                       
+* Cerebrovascular diseases
+* Influenza and pneumonia             
+* Chronic lower respiratory diseases    
+* Nephritis, nephrotic syndrome and nephrosis
+* Accidents                
+* Intentional self-harm (suicide)
+* Ill-defined and unspecified causes of mortality
+* All other causes                            
+* Alzheimer's disease                  
+
+## All Cause Mortality (CA-Weekly)
+
+![](images/all-cause-ca.svg){width=100%}
+
+## Influenza & Pneumonia Mortality (CA-Weekly)
+
+![](images/i-and-p-ca.svg){width=100%}
+
+## Influenza & Pneumonia Mortality (ON-Weekly)
+
+![](images/i-and-p-on.svg){width=100%}
+
+## Influenza & Pneumonia Mortality (NL-Weekly)
+
+![](images/i-and-p-nl.svg){width=100%}
+
+## Influenza & Pneumonia Mortality (CA-1956)
+
+![](images/i-and-p-on-1956.svg){width=100%}
+
+# Modelling
+
+## Two Examples
+
+* Inferring force of infection
+* Interpolating counts over unequal time periods
+
+## London (UK) Scarlet Fever Mortality Data
+
+![](images/scarlet-fever-data.svg){width=100%}<footnote>Work by Kevin Zhao and David Earn. Sorry this is not a Canadian example.</footnote>
+
+## Modelling London Scarlet Fever Mortality Data{.columns-2}
+
+$$\Delta S = B - \Lambda(t) \cdot S - \frac{S}{N} \cdot D$$
+$$\Delta I = \Lambda(t) \cdot S - \gamma I - \frac{I}{N} \cdot D$$
+$$\Delta R = (\gamma - CFP)I - \frac{R}{N} \cdot D$$
+$$\Delta M = CFP \cdot I$$
+$$\Lambda(t) = \frac{\beta(t) \cdot I}{N}$$
+
+<footnote>Work by Kevin Zhao and David Earn. Sorry this is not a Canadian example.</footnote>
+
+>- $B$ and $D$: weekly observed birth and all cause mortality counts
+>- $N$: population
+>- $CFP$: case-fatality proportion for scarlet fever (assumed to be 0.05)
+>- $\Delta M$: weekly scarlet fever mortality estimates (variable being fitted with maximum likelihood)
+>- $\beta(t)$: time-varying transmission rate
+>- $\Lambda(t)$: time-varying force of infection
+
+## Estimating Force of Infection Time Series
+
+>- Varies in time
+>- But functional form unknown
+>- Estimate using data and a flexible model
+>- Assume the transmission rate is determined by radial basis functions<footnote>https://canmod.github.io/macpan2/articles/time_varying_parameters.html#radial-basis-functions-for-flexible-time-variation</footnote>
+>- Fit basis function coefficients by maximum likelihood
+
+## Maximum Likelihood Fit (London Scarlet Fever)
+
+![](images/scarlet-fever-fit.svg){width=100%}<footnote>Fitted with https://canmod.github.io/macpan2/</footnote>
+
+## Force of Infection Estimate (London Scarlet Fever)
+
+![](images/scarlet-fever-foi.svg){width=100%}<footnote>Fitted with https://canmod.github.io/macpan2/</footnote>
+
+## Counts over Unequal Time Periods
+
+>- Idiosyncratic historical data
+>    - Counts reported over different lengths of time
+>    - Report periods overlap
+>    - Gaps in counts
+>- OK with custom mechanistic models (e.g. SIR + radial-basis-functions)
+>- Problem with traditional time-series analysis that assume
+>    - Evenly spaced
+>    - No missing values
+
+## Counts over Unequal Time Periods
+
+![](images/aarms-roswell-1.png){width=60%}<footnote>Work by Michael Roswell</footnote>
+
+## Counts over Unequal Time Periods {.columns-2}
+
+![](images/aarms-roswell-1.png){width=90%}
+
+<p class="forceBreak"></p>
+
+![](images/aarms-roswell-2.png){width=90%}<footnote>Work by Michael Roswell</footnote>
+
+## Counts over Unequal Time Periods
+
+![](images/aarms-roswell-3.png){width=80%}<footnote>Work by Michael Roswell</footnote>
+
+## Counts over Unequal Time Periods{.columns-2}
+
+```
+mgcv::gam(data
+  , formula = count
+    ~ s(period_mid_day, k)
+    + offset(log(days_in_period))
+    + offset(log(population / 1e5))
+  , method = "fREML"
+  , family = mgcv::nb
+)
+```
+
+<p class="forceBreak"></p>
+
+>- Generalized Additive Models (GAMs) in R
+>- Estimate mean daily cases per 100,000 residents
+>- Smooth function of time
+>- Control for reporting period length and population size with `offset`s
+>- Negative binomial error structure
+>- Issue: choosing the smoothing parameter, `k`
+
+## Counts over Unequal Time Periods
+
+![](images/aarms-roswell-ontario-salmonella.png){width=90%}
+
+## Other Harmonization Challenges
+
+>- Shifting disease definitions, names, hierarchies, and codes
+>- Age structured data
+>    - Age group definitions changing over time
+>    - Hierarchical data
+>    - Use monotonic splines for interpolating cumulative age distributions, and back transforming to get counts in any bin
+>- Connecting to recent data
+>    - No luck during COVID
+>    - But Ontario just came through
+
+# Data Access
+
+## Data Access Demos
+
+* GitHub<footnote>https://github.com/canmod/iidda-staging, https://github.com/canmod/iidda-test-assets (note that these are currently private until our first publication is submitted</footnote>
+* Shiny
+* R code
+* API
+
+## Acknowledgements{.columns-2}
+
+* CANMOD (funding)
+* David Earn (vision, ideas)
+* Jonathan Dushoff, Ben Bolker (ideas)
+* Gabrielle MacKinnon, Samara Manzin (digitization, data prep scripting, data harmonization)
+* Sophie Stelmach, Chyun Shi, Jeanne Lin (digitization)
+* Jen Freeman (data prep scripting, time series visualization tools)
+* Michael Roswell (R development, data harmonization methodology)
+<p class="forceBreak"></p>
+* Kevin Zhao (modelling)
+* Bicko Cygu (scripting and pipelining)
+* Frank Jin, Ronald Jin (data api and shiny app)
+* Steven Lee (data harmonization)
+* Julia Maja (digitization, data quality scripting)
+* Ariel Earn (data resource organization)
+* Arash Shamseddini (data prep scripting)
