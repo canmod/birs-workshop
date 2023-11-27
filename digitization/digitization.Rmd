@@ -55,36 +55,86 @@ $(document).ready(function() {
 .forceBreak { -webkit-column-break-after: always; break-after: column; }
 </style>
 
-# Background
+## Acknowledgements (page 1)
 
-## Systematic Canadian Data Archiving
+* CANMOD (funding)
+* David Earn (vision, ideas)
+* Jonathan Dushoff, Ben Bolker (ideas)
+* Gabrielle MacKinnon, Samara Manzin (digitization, data prep scripting, data harmonization)
+* Sophie Stelmach, Chyun Shi, Miriam Dushoff, Jeanne Lin (digitization)
+* Jen Freeman (data prep scripting, time series visualization tools)
+* Michael Roswell (R development, data harmonization methodology)
 
->- Modelling historical epidemics
->   - Research area of David Earn for >20 years
->- Models need data
->   - Earn-led digitization projects
->   - Data digitized to support publications
->   - Data made public
->- Systematic about Canadian data
->   - Last 2.5 years
->   - Not just for particular publications or purposes
->   - Broad coverage across diseases and provinces
->   - Inspired by Project Tycho in the US<footnote>https://www.tycho.pitt.edu/</footnote>
+## Acknowledgements (page 2)
 
-## Systematic Canadian Data Archiving
+* Kevin Zhao (modelling)
+* Bicko Cygu (scripting and pipelining)
+* Frank Jin, Ronald Jin (data api and shiny app)
+* Steven Lee (data harmonization)
+* Julia Maja (digitization, data quality scripting)
+* Ariel Earn (data resource organization)
+* Arash Shamseddini (data prep scripting)
+
+# Data from Past Epidemics
+
+## Why Study Past Epidemics?
+
+>- Learn from our mistakes
+>- Pandemic preparedness
+>- Getting better at modelling
+
+![](images/plague.jpg){width=50%}
+
+## SIR fit to London Scarlet Fever
+
+![](images/scarlet-fever-fit.svg){width=100%}<footnote>Fitted with https://canmod.github.io/macpan2/</footnote>
+
+## Inferred Force of Infection
+
+![](images/scarlet-fever-foi.svg){width=100%}<footnote>Fitted with https://canmod.github.io/macpan2/</footnote>
+
+
+## Historical Infectious Disease Data
+
+>- Modelling historical epidemics requires data
+>- Good news: There's lots of it
+>- Bad news: It can be difficult to get and/or use
+
+## Historical Infectious Disease Data
+
+![](images/again.png){width=90%}<footnote>https://canmod.net/digitization</footnote>
+
+## Historical Infectious Disease Data
+
+![](images/write-head.png){width=100%}<footnote>https://canmod.net/digitization</footnote>
+
+## Historical Infectious Disease Data
+
+![](images/hand-write.png){width=80%}<footnote>https://canmod.net/digitization</footnote>
+
+
+## Historical Infectious Disease Data
+
+>- Modelling these data requires digitization
+>- Kinds of historical data digitization projects
+>   - In support of specific research topics as they arise
+>   - Systematic coverage of a particular time and place<footnote>For example, https://www.tycho.pitt.edu/</footnote>
+
+## International Infectious Disease Data Archive (IIDDA)
+
+>- Led by David Earn
+>- Make historical digitized data public
+>- Being rebuilt
+>- Today we will have a trial re-release
+
+
+## CANMOD Digitization Project Overview
 
 Straightforward and convenient access to historical and publicly available incidence, mortality, and population data:
 
 >- Notifiable Communicable Disease Incidence (CDI) (1924-2000)
 >- Population (1871-present)
 >- Mortality (1950-2010)
-
-## Outline
-
-* Canadian Notifiable Communicable Disease Incidence Data
-* Canadian Population Data
-* Canadian Mortality Data
-* Data Modelling Examples
 
 # Canadian Notifiable Communicable Disease Incidence 
 
@@ -109,9 +159,9 @@ Straightforward and convenient access to historical and publicly available incid
 
 ## Canadian CDI -- Tidy CSV
 
-![](images/tidy-aarms-2.png){width=90%}
+![](images/tidy-unharm.png){width=90%}
 
-## Canadian CDI -- Harmonized CSV (TODO)
+## Harmonization
 
 >- Users want things like: "Diphtheria incidence in Canada"
 >    - Longest time-range possible please (1924-2000)
@@ -124,19 +174,85 @@ Straightforward and convenient access to historical and publicly available incid
 >    - Inconsistent time periods (e.g. weekly shifts to monthly)
 >    - Age group definitions change over time<footnote>We have used monotonic splines for interpolating cumulative age distributions, and back transforming to get counts in any bin</footnote>
 
-## The Dushoff Plot
+## Harmonizing Location (easy but useful)
 
-* At the Canadian level we have different time scales and different spatial scales
-* We need to divide both by length of time period and population size of the reporting province
-* We first filter out everything that is missing (not available, not reportable, completely gone), but we cannot filter out unclear
-* Filter out nesting_location == Canada
-* Join in population data on year and location
-* Group by period start and end dates and compute aggregate population sizes
-* Join these population sizes back to original table
+![](images/harm-location-better.png){width=50%}
 
-## Diphtheria
+## Harmonizing Disease Names (very hard ... still needs work)
 
-![](images/diphtheria.svg){width=100%}
+![](images/harm-disease.png){width=90%}
+
+## Links
+
+### Data Dictionary
+
+[https://math.mcmaster.ca/iidda/api/data_dictionary](https://math.mcmaster.ca/iidda/api/data_dictionary)
+
+### Harmonization Lookup Tables
+
+[https://math.mcmaster.ca/iidda/api/lookup_tables?lookup_type=disease](https://math.mcmaster.ca//iidda/api/lookup_tables?lookup_type=disease)
+[https://math.mcmaster.ca/iidda/api/lookup_tables?lookup_type=location](https://math.mcmaster.ca/iidda/api/lookup_tables?lookup_type=location)
+
+### Metadata
+
+[https://math.mcmaster.ca/iidda/api/metadata](https://math.mcmaster.ca/iidda/api/metadata)
+
+
+## Getting Data
+
+[https://math.mcmaster.ca/iidda/api/raw_csv?dataset_ids=cdi_ca_1975-78_wk_prov_harmonized](https://math.mcmaster.ca/iidda/api/raw_csv?dataset_ids=cdi_ca_1975-78_wk_prov_harmonized)
+
+## From R -- Installation
+
+```{r, eval = FALSE, echo = TRUE}
+remotes::install_github('canmod/rapiclient')
+remotes::install_github('canmod/iidda-tools', subdir = 'R/iidda')
+remotes::install_github('canmod/iidda-tools', subdir = 'R/iidda.api')
+iidda.api::ops_staging$metadata() |> names()
+```
+
+## Example From R
+
+```{r, eval = TRUE, echo = FALSE}
+library(iidda.api)
+library(ggplot2)
+options(iidda_api_msgs = FALSE)
+```
+
+```{r, echo = TRUE, eval = TRUE}
+diphtheria_alberta = iidda.api::ops_staging$filter(resource_type = "CANMOD CDI"
+  , disease = "diphtheria"
+  , iso_3166_2 = "CA-AB"
+  , time_scale = "wk"
+)
+```
+
+## Example From R
+
+```{r, echo = TRUE, eval = TRUE}
+ggplot(diphtheria_alberta) + 
+  geom_line(aes(period_end_date, cases_this_period / days_this_period))
+```
+
+## Get the Data from the three Categories in R
+
+```{r, echo = TRUE, eval = FALSE}
+canmod_cdi = iidda.api::ops_staging$filter(
+    resource_type = "CANMOD CDI"
+  , iso_3166 = "CA"
+)
+canmod_mort = iidda.api::ops_staging$filter(
+    resource_type = "Mortality"
+  , period_end_date = "1950-01-01/2020-12-31"
+)
+canmod_pop = iidda.api::ops_staging$filter(
+    resource_type = "Population"
+  , iso_3166 = "CA"
+)
+```
+
+
+# Appendix / Extras
 
 # Canadian Population Data
 
@@ -180,18 +296,6 @@ Straightforward and convenient access to historical and publicly available incid
 ## Newfoundland Population
 
 ![](images/pop-nfld.svg){width=100%}
-
-## Yukon Population
-
-![](images/pop-yukon.svg){width=100%}
-
-## Yukon Sex Ratio
-
-![](images/sex-ratio-yukon.svg){width=100%}
-
-## Population of Northwest Territories
-
-![](images/pop-nt-nu.svg){width=100%}
 
 # Canadian Mortality Data
 
@@ -243,7 +347,45 @@ Straightforward and convenient access to historical and publicly available incid
 
 ![](images/i-and-p-on-1956.svg){width=100%}
 
-# Modelling
+## Acknowledgements{.columns-2}
+
+* CANMOD (funding)
+* David Earn (vision, ideas)
+* Jonathan Dushoff, Ben Bolker (ideas)
+* Gabrielle MacKinnon, Samara Manzin (digitization, data prep scripting, data harmonization)
+* Sophie Stelmach, Chyun Shi, Miriam Dushoff, Jeanne Lin (digitization)
+* Jen Freeman (data prep scripting, time series visualization tools)
+* Michael Roswell (R development, data harmonization methodology)
+<p class="forceBreak"></p>
+* Kevin Zhao (modelling)
+* Bicko Cygu (scripting and pipelining)
+* Frank Jin, Ronald Jin (data api and shiny app)
+* Steven Lee (data harmonization)
+* Julia Maja (digitization, data quality scripting)
+* Ariel Earn (data resource organization)
+* Arash Shamseddini (data prep scripting)
+
+
+
+
+
+## CANMOD Digitization Project
+
+>- Systematic about Canadian data
+>- Last 2.5 years
+>- Not for particular publications or purposes
+>- Broad coverage across diseases and provinces
+>- Today's trial includes only the CANMOD data
+
+
+## International Infectious Disease Data Archive (IIDDA)
+
+>- IIDDA has and will include
+>    - London Bills of Mortality
+>    - Registrar General Weekly Returns
+>    - Data digitized for 
+>- Mountains of scans to enter
+
 
 ## Two Examples
 
@@ -350,30 +492,3 @@ mgcv::gam(data
 >- Connecting to recent data
 >    - No luck during COVID
 >    - But Ontario just came through
-
-# Data Access
-
-## Data Access Demos
-
-* GitHub<footnote>https://github.com/canmod/iidda-staging, https://github.com/canmod/iidda-test-assets (note that these are currently private until our first publication is submitted</footnote>
-* Shiny
-* R code
-* API
-
-## Acknowledgements{.columns-2}
-
-* CANMOD (funding)
-* David Earn (vision, ideas)
-* Jonathan Dushoff, Ben Bolker (ideas)
-* Gabrielle MacKinnon, Samara Manzin (digitization, data prep scripting, data harmonization)
-* Sophie Stelmach, Chyun Shi, Jeanne Lin (digitization)
-* Jen Freeman (data prep scripting, time series visualization tools)
-* Michael Roswell (R development, data harmonization methodology)
-<p class="forceBreak"></p>
-* Kevin Zhao (modelling)
-* Bicko Cygu (scripting and pipelining)
-* Frank Jin, Ronald Jin (data api and shiny app)
-* Steven Lee (data harmonization)
-* Julia Maja (digitization, data quality scripting)
-* Ariel Earn (data resource organization)
-* Arash Shamseddini (data prep scripting)

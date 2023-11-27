@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 
 ## Model Development Cycle
 
-![](images/public-health-modelling-cycle.drawio.png)
+![](images/public-health-modelling-cycle.svg)
 
 # McMasterPandemic Project History
 
@@ -77,12 +77,30 @@ knitr::include_graphics("images/third_wave_prediction.gif")
 
 -   Model structures
     -   Macpan modelling group's base COVID-19 model
-    -   Extensions of macpan -- vaccination, VOC, and waste-water models
+    -   Extensions of macpan base -- vaccination, VOC, and waste-water models
     -   Metapopulation model of Newfoundland -- 1000s of compartments
     -   Endemic COVID-19 model
-    -   Monkeypox with two risk groups
+    -   Mpox with two risk groups
 
+## Case Reports
 
+![](images/pho_case_reports_prov_en.png)
+
+## Hospital Admissions
+
+![](images/pho_hosp_adm_prov_en.png)
+
+## Hospital Occupancy
+
+![](images/pho_hosp_occ_prov_en.png)
+
+## ICU Occupancy
+
+![](images/pho_icu_preval_en.png)
+
+## Seroprevalence
+
+![](images/pho_seroprev_en.png)
 
 ## Software Timeline
 
@@ -125,11 +143,11 @@ Modular model building
 
 ## Model Development Cycle
 
-![](images/public-health-modelling-cycle.drawio.png)
+![](images/public-health-modelling-cycle.svg)
 
 ## Model Development Cycle
 
-![](images/public-health-modelling-cycle-highlight.drawio.png)
+![](images/public-health-modelling-cycle-highlight.svg)
 
 # Modular Model Building 
 
@@ -203,11 +221,16 @@ What we do in `macpan2`
 
 ## SIR Example
 
-::: {.incremental}
-* State variables ($S$, $I$, $R$)
-* State variable aggregation ($N = S + I + R$)
-* Transmission rate ($\beta$)
-* Flow rates ($\lambda = \frac{\beta I}{N}$, $\gamma$)
+::: {.columns}
+::: {.column}
+* State variables: $S$, $I$, $R$
+* Parameters: $\beta$, $\gamma$
+* Aggregation: $N = S + I + R$
+:::
+::: {.column}
+* Force of infection: $\lambda = \frac{\beta I}{N}$
+* Flow rates: $\lambda S$, $\gamma I$
+:::
 :::
 
 ```{dot}
@@ -231,6 +254,43 @@ digraph G {
 }
 ```
 
+## SIR Example
+
+::: {.columns}
+::: {.column}
+* Model quantity labels
+    * $S$, $I$, $R$
+    * $\beta$, $\gamma$
+:::
+::: {.column}
+* Functional forms
+    * $N = S + I + R$
+    * $\lambda = \frac{\beta I}{N}$
+    * $\lambda S$, $\gamma I$
+:::
+:::
+
+
+```{dot}
+//| fig-height: 2
+digraph G {
+  layout=dot
+  rankdir="LR"
+  
+  
+  node [fontcolor=blue fontname="Courier New"]
+  edge [fontcolor=blue fontname="Courier New"]
+  
+  SI [label=<&lambda;*S> shape=plaintext]
+  IR [label=<&gamma;*I> shape=plaintext]
+  
+  S:e->SI:w [arrowhead=none]
+  SI:e->I:w 
+  I:e->IR:w [arrowhead=none]
+  IR:e->R:w
+  I:s->SI:s [label=<&lambda;=&beta;*I/N> style=dotted]
+}
+```
 
 ## Expressing SIR in Data Prep Language
 
@@ -311,9 +371,9 @@ flow_rates = mp_union(
 flow_rates
 ```
 
-## Defining Flow Mechanisms
+## Repeating Functional Forms
 
-In simple models, defining a flow mechanism take three steps:
+For example, defining a flow mechanism can take three steps in a simple model:
 
 1. Choose a `from` compartment
 2. Choose a `to` compartment
@@ -332,9 +392,9 @@ digraph G {
 }
 ```
 
-## Defining Flow Mechanisms
+## Repeating Functional Forms
 
-In simple models, defining a flow mechanism take three steps:
+For example, defining a flow mechanism can take three steps in a simple model:
 
 1. Choose a `from` compartment (e.g. $S$)
 2. Choose a `to` compartment (e.g. $I$)
@@ -353,7 +413,7 @@ digraph G {
 }
 ```
 
-## Defining Flows in Structured Models
+## Repeating Functional Forms
 
 ```{dot}
 //| fig-height: 4
@@ -386,7 +446,7 @@ digraph G {
 }
 ```
 
-## Defining Flows in Structured Models
+## Repeating Functional Forms
 
 ::: fragment
 One more step in structured models.
@@ -406,7 +466,7 @@ The last step is new.
 4. Match the elements of the `from`, `to`, and `rate` sets
 :::
 
-## Defining Flows in Structured Models
+## Repeating Functional Forms
 
 ::: {.fragment}
  
@@ -434,7 +494,7 @@ mp_join(
 ```
 :::
 
-## Defining Flows in Structured Models
+## Repeating Functional Forms
 
  
 ```{r}
@@ -445,7 +505,7 @@ mp_join(
 )
 ```
 
-## Defining Flows in Structured Models
+## Repeating Functional Forms
 
 ```{r}
 mp_join(
@@ -455,7 +515,7 @@ mp_join(
 )
 ```
 
-## Defining Flows Comparison
+## Repeating Functional Forms
 
 Unstructured Model:
 ```{r}
@@ -473,43 +533,65 @@ mp_join(
 )
 ```
 
-## Transmission and Influences
+## Real Case
 
-```{r}
-trans_rates = mp_cartesian(trans_rates_sir, cities)
+![](images/wordenD.png){width=60%}
+
+## Contributions, Contributors, Community
+
+-   Original developers were real modellers (Ben Bolker, Jonathan
+    Dushoff, David Earn, Mike Li, Irena Papst)
+-   Pipeline development for delivering PHAC, OMT, and PHO forecasts (Irena Papst, Mike Li)
+-   Sharcnet C++ expertise (Weiguang Guan)
+-   Product model theory (Darren Flynn-Primrose)
+-   Modellers (Amy Hurford, Lisa Kanary, Caroline Colijn, Zahra Mohammadi, Claude Nadeau, Philippe Berthiaume, Evan Mitchell)
+-   Irena Papst and Mike Li
+
+
+## `macpan2`
+
+```{r, eval = FALSE}
+install.packages("remotes")
+
+remotes::install_github("canmod/oor")
+
+## main branch -- without the modular model building stuff!
+remotes::install_github("canmod/macpan2")
+
+## development branch -- with the modular stuff, but with
+## more stuff in disarray
+remotes::install_github("canmod/macpan2@refactorcpp")
+
+## easier
+install.packages("macpan2", repos = "https://canmod.github.io/drat",
+                 type = "source")
+
+install.packages("macpan2", repos = "https://canmod.github.io/drat", 
+                 type = "mac.binary")
 ```
-```{r, echo = FALSE}
-trans_rates
+
+* canmod.net/misc/quickstart
+* github.com/canmod/macpan2/blob/refactorcpp/vignettes/quickstart.Rmd
+
+## Digitized Data
+
+```{r, eval = FALSE}
+remotes::install_github("canmod/rapiclient")
+remotes::install_github("canmod/iidda-tools", subdir = "R/iidda")
+remotes::install_github("canmod/iidda-tools", subdir = "R/iidda.api")
 ```
 
-
-## Decomposing
-
-```{r}
-
-```
-
-## Spatial Movement Rates
-
-## Two-Strain Model
-
-```{dot}
-//| fig-height: 2
-digraph G {
-  layout=dot
-  rankdir="LR"
-  
-  
-  node [fontcolor=blue fontname="Courier New"]
-  edge [fontcolor=blue fontname="Courier New"]
-  
-  SIa [label=<&lambda;*S> shape=plaintext]
-  IaR [label=<&gamma;*I> shape=plaintext]
-  
-  S:e->SIa:w [arrowhead=none]
-  SIa:e->Ia:w 
-  Ia:e->IaR:w [arrowhead=none]
-  IaR:e->R:w
-  Ia:s->SIa:s [label=<&lambda;=&beta;*I.A/N> style=dotted]
-}
+```{r, eval = FALSE}
+canmod_cdi = iidda.api::ops_staging$filter(
+    resource_type = "CANMOD CDI"
+  , iso_3166 = "CA"
+)
+canmod_mort = iidda.api::ops_staging$filter(
+    resource_type = "Mortality"
+  , period_end_date = "1950-01-01/2020-12-31"
+)
+canmod_pop = iidda.api::ops_staging$filter(
+    resource_type = "Population"
+  , iso_3166 = "CA"
+)
 ```
