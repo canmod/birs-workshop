@@ -1,14 +1,32 @@
 \documentclass{article}
 
+% packages
+\usepackage{color}
+\usepackage{xspace}
+\usepackage{hyperref}
+
+% macros 
+\newcommand{\towrite}[1]{\textcolor{magenta}{\textsl{TO WRITE: #1}}}
+\newcommand{\macpan}{\texttt{macpan2}\xspace}
+\newcommand{\eg}{\textit{e.g.},\xspace}
+
 \title{BIRS Workshop on macpan2}
 \date{\today}
 \author{Steven C Walker, Irena Papst}
 
 \begin{document}
-  \pagenumbering{gobble}
   \maketitle
-  \newpage
-  \pagenumbering{arabic}
 
-  Hello World!
+  \towrite{What is \macpan? Some preamble about \macpan (perhaps ripped from docs/grant proposal/etc)}
+
+  This special session started with a presentation introducing \macpan, with a specific focus on one of its key features: modular model building. \towrite{Steve to summarise his presentation.}
+  
+  After the presentation, participants were invited to a hands-on session, where they explored \macpan themselves. There were roughly 20 participants in the session, representing a wide range of career phases, from graduate students to tenured faculty. We started the session by helping participants download and install the software on their computers. There were several installation hiccups that we were able to troubleshoot on the fly. These issues gave us valueable insight into potential difficulties deploying this software more widely \towrite{which have since been addressed? which will be addressed in future versions of the software? ...} 
+  
+  We then invited participants to work through a \href{https://github.com/canmod/macpan2/blob/refactorcpp/vignettes/quickstart.Rmd}{getting started vignette} to further familiarise them with the software's model specification grammar that enables modular model building. The vignette walks users through specifying a very simple epidemiological model, and then introduces software features that make it easy to add additional structure to models, such as multiple infection types (\eg asymptomatic, symptomatic), multiple locations (often referred to as ``metapopulation'' models), stratification by vaccination status, and more. The vignette specifically works through the example of specifying a two-strain model while demonstrating \macpan functions key to easily specifying ``structured'' models. 
+  
+  After participants worked through the vignette, some worked on specifying other models in \macpan, as a way to test their understanding of the model specification grammar and to experiment with other features of the package. Two participants worked together to try to specify a Lotka-Voltera predator-prey model, and their attempts revealed interesting points of friction in the software that have directly inspired further development. These attempts also inspired the addition of Lotka-Voletra models to \macpan's model library.
+
+  This session was the first \macpan training ever run, and overall, we received a lot of valuable feedback from participants on it. We continue to use this feedback to both improve guides for the software, as well as the software itself. 
+  
 \end{document}
