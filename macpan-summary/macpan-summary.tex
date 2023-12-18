@@ -1,14 +1,36 @@
 \documentclass{article}
 
+% packages
+\usepackage{color}
+\usepackage{xspace}
+\usepackage{hyperref}
+
+% macros
+\newcommand{\towrite}[1]{\textcolor{magenta}{\textsl{TO WRITE: #1}}}
+\newcommand{\macpan}{\texttt{macpan2}\xspace}
+\newcommand{\macpanOrig}{\texttt{McMasterPandemic}\xspace}
+\newcommand{\R}{\texttt{R}\xspace}
+\newcommand{\eg}{\textit{e.g.},\xspace}
+
 \title{BIRS Workshop on macpan2}
 \date{\today}
 \author{Steven C Walker, Irena Papst}
 
 \begin{document}
-  \pagenumbering{gobble}
   \maketitle
-  \newpage
-  \pagenumbering{arabic}
 
-  Hello World!
+  \macpanOrig is an \R package that was developed to provide forecasts and insights to public health agencies throughout the COVID-19 pandemic. Forecasts created with \macpanOrig where prepared for the Public Health Agency of Canada, the Ontario Science Table, the World Health Organization, and Public Health Ontario. Much was learned about developing general purpose compartmental modelling software during these experiences, but the pressure to deliver regular forecasts to these organizations made it difficult to focus on the software itself. With the support of CANMOD, the \macpan project was launched to re-imagine \macpanOrig, building it from the ground up to address lessons learned throughout the COVID-19 pandemic.
+
+  This special session started with a presentation by Steve Walker introducing \macpan. Steve traced the history of \macpanOrig and \macpan, using this history to argue that impactful modelling requires many interdisciplinary steps along the path from epidemiological research teams to operational decision makers. Researchers must quickly tailor a model to an emerging public-health concern, validate and calibrate it to data, work with decision makers to define model outputs useful for stakeholders, configure models to generate those outputs, and package up those insights in an appropriate format for stakeholders. Unlike traditional modelling approaches, \macpan tackles this challenge from a software-engineering perspective, which allows us to systematically address bottlenecks along this path to impact in ways that will make future solutions easier to achieve. The goal is to enable researchers to focus on their core strengths and fill knowledge gaps efficiently and effectively.
+
+  The presentation then focused on a specific feature for addressing modelling bottlenecks: modular model building. New public health concerns often demand new modules to be added to existing models. For example, as vaccines against COVID-19 were developed, models needed to be modified to include vaccination. While it might seem straightforward to add a vaccination module to an existing modelling pipeline, experience shows that it can be surprisingly difficult if your existing toolkit is not set up for such modular model building. Steve briefly reviewed existing approaches to modular compartmental modelling based on mathematical tools from graph theory and category theory. Steve described how modules in \macpan can be represented by tables (like tables in a database), and that widely-used table manipulation tools (like join and group-by) can be used to combine modules without the need for advanced mathematical concepts.
+
+  After the presentation, participants were invited to a hands-on session, where they explored \macpan themselves. There were roughly 20 participants in the session, representing a wide range of career phases, from graduate students to tenured faculty. We started the session by helping particpants download and install the software on their computers. There were several installation hiccups that we were able to troubleshoot on the fly. These issues gave us valueable insight into potential difficulties deploying this software more widely, which will be addressed in future versions of the software.
+
+  We then invited participants to work through a \href{https://github.com/canmod/macpan2/blob/refactorcpp/vignettes/quickstart.Rmd}{getting started vignette} to further familiarise them with the software's model specification grammar that enables modular model building. The vignette walks users through specifying a very simple epidemiological model, and then introduces software features that make it easy to add additional structure to models, such as multiple infection types (\eg asymptomatic, symptomatic), multiple locations (often referred to as ``metapopulation'' models), stratification by vaccination status, and more. The vignette specifically works through the example of specifying a two-strain model while demonstrating \macpan functions key to easily specifying ``structured'' models.
+
+  After participants worked through the vignette, some worked on specifying other models in \macpan, as a way to test their understanding of the model specification grammar and to experiment with other features of the package. Two participants worked together to try to specify a Lotka-Volterra predator-prey model, and their attempts revealed interesting points of friction in the software that have directly inspired further development. These attempts also inspired the addition of Lotka-Volterra models to \macpan's model library. Three participants independently provided the same feedback about how calibrating models to data is a bigger bottleneck than modular model building, which has inspired us to make the existing powerful calibration tools more accessible.
+
+  This session was the first \macpan training ever run, and overall, we received a lot of valuable feedback from participants on it. We continue to use this feedback to both improve guides for the software, as well as the software itself.
+
 \end{document}
