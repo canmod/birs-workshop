@@ -1,14 +1,40 @@
 \documentclass{article}
 
+% packages
+\usepackage{color}
+\usepackage{xspace}
+\usepackage{hyperref}
+
+
 \title{Data Digitization Presentation}
 \date{\today}
 \author{Steven C Walker}
 
 \begin{document}
-  \pagenumbering{gobble}
   \maketitle
-  \newpage
-  \pagenumbering{arabic}
+  In addition to funding research, training, and networking opportunities for building applied infectious disease modelling capacity in Canada, CANMOD also funded a project to provide straightforward and convenient access to historical and publicly available incidence, mortality, and population data. This project led to three long-term Canadian datasets.
+\begin{itemize}
+  \item Notifiable Communicable Disease Incidence (CDI) (1924-2000)
+    \begin{itemize}
+      \item 1924-1980 (weekly), 1980-1990 (monthly), 1990-2000 (quarterly)
+      \item Broken down by province/territory
+      \item Broken down by disease
+      \item Some diseases broken down by age and sex (before 1956)
+    \end{itemize}
+  \item Mortality (1950-2010)
+    \begin{itemize}
+      \item Weekly
+      \item Broken down by province/territory
+      \item Broken down by 12 StatCan-selected cause groups
+      \item Extends StatCan public data portal back from 2010 to 1950
+    \end{itemize}
+  \item Population (1871-present)
+    \begin{itemize}
+      \item Population estimates every ten years (1881-1921), every year (1921-present)
+      \item Broken down by sex
+      \item Broken down by age
+      \item Broken down by province/territory
+    \end{itemize}
+\end{itemize}
 
-  Hello World!
 \end{document}
