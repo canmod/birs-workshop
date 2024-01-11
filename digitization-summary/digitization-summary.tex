@@ -13,6 +13,11 @@
 \begin{document}
   \maketitle
   In addition to funding research, training, and networking opportunities for building applied infectious disease modelling capacity in Canada, CANMOD also funded a project to provide straightforward and convenient access to historical and publicly available incidence, mortality, and population data. This project led to three long-term Canadian datasets.
+
+Although there is a great wealth of historical data on infectious diseases in Canada that is or could be technically available to the public, it tends to be locked up in inconvenient formats like handwritten documents and internal databases at Statistics Canada. With this project, we are building a Canadian data archive that will provide straightforward and convenient access to historical public Canadian infectious disease data.
+
+We systematically contacted data stewards across Canada to access the disparate source documents that contain Canada's public historical infectious disease data, in an effort to be systematic and comprehensive. We entered the information provided by the source documents into spreadsheets such that they can be compared with the original sources, and have produced automated pipelines for converting the digitized spreadsheets into convenient csv files with metadata. We worked with Statistics Canada to obtain mortality data that StatCan has not made public themselves. This work involved working with StatCan analysts to balance strict anonymity requirements with our intention to make these data publicly available. We systematically digitized official documents on Canadian populations for normalizing disease incidence and mortality data. All-in-all we now have a systematic and comprehensive data archive of the following communicable disease incidence, mortality, and population data.
+
 \begin{itemize}
   \item Notifiable Communicable Disease Incidence (CDI) (1924-2000)
     \begin{itemize}
@@ -36,5 +41,35 @@
       \item Broken down by province/territory
     \end{itemize}
 \end{itemize}
+
+This archive is roughly 2 million records long.
+
+To enhance accessibility of this archive we developed the following tools, which will be made public once we have a pre-print describing this work.
+
+\begin{itemize}
+  \item All data available on GitHub with open data pipelines
+  \item Web-based and R-based APIs for programmatically accessing and searching the data on GitHub
+  \item Dashboard for searching, downloading, and combining data
+\end{itemize}
+
+We provided meeting participants with sample API commands for accessing the archive.
+
+We identified and adopted best-practices for archiving research data. We developed a controlled data dictionary and CSV format used by all datasets in the archive, making it easier to combine data from different historical sources. We complied with widely adopted DataCite standard for metadata on research datasets -- allows our archive to be integrated in any number of pre-existing data portals. Utimately, we plan to contribute our archive to a long-term storage and data access service for researchers (likely the Federated Research Data Repository).
+
+This project has the potential to contribute to Canadian pandemic preparedness by providing long-term data on a diversity of infectious diseases that have significantly impacted the health of Canadians. The convenient access to these data provided by this project will help epidemiologists to learn from past public health challenges.
+
+% Much of the data came as scans of paper documents. These data were manually entered into the computer as Excel spreadsheets that replicate the format of the original scans. Optical character recognition (OCR) was attempted to automate this process, but we found that the accuracy was not sufficient. For example, the incidence data before 1956 come as handwritten documents including numbers that are not easily legible. But even typewritten documents after 1956 are not reliably intepreted by our OCR tools.
+%
+% Ideally we would like users of the archive to be able to easily generate long time series of particular diseases in particular locations. Steve discussed challenges in pulling various data sources together to provide such a user experience, including the following.
+%
+% \begin{itemize}
+%   \item Disease and place names change over time
+%   \item Disease codes (ICD) change over time
+%   \item Hierarchical data (e.g. diseases within families of diseases), with hierarchies that change over time
+%   \item Inconsistent time periods (e.g. weekly shifts to monthly)
+%   \item Age group definitions change over time
+% \end{itemize}
+%
+% Solutions to these issues were discussed briefly.
 
 \end{document}
