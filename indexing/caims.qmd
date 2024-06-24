@@ -200,6 +200,20 @@ pp = (si
 ggsave("images/pp.png", pp, width = 4, height = 2.5)
 ```
 
+```{r eval = FALSE}
+library(ggplot2); library(dplyr)
+(spec
+ |> mp_simulator(time_steps = 50, outputs = c("I", "infection"))
+ |> mp_trajectory()
+ |> ggplot() 
+ + geom_line(aes(time, value)) 
+ + facet_wrap(~ matrix, scales = "free")
+ + theme_bw()
+)
+```
+
+## Simulating Per-Capita Flows
+
 ![](images/pp.png){width="800"}
 
 ## Specifying Per-Capita Flows

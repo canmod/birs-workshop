@@ -536,23 +536,25 @@ Steve Walker (McMaster University)
 <aside><div>
 <p><a href="https://canmod.github.io/macpan2#hello-world">https://canmod.github.io/macpan2#hello-world</a></p>
 </div></aside></section>
-<section id="specifying-per-capita-flows-3" class="slide level2">
-<h2>Specifying Per-Capita Flows</h2>
+<section id="simulating-per-capita-flows" class="slide level2">
+<h2>Simulating Per-Capita Flows</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2); <span class="fu">library</span>(dplyr)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>(spec</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a> <span class="sc">|&gt;</span> <span class="fu">mp_simulator</span>(<span class="at">time_steps =</span> <span class="dv">50</span>, <span class="at">outputs =</span> <span class="fu">c</span>(<span class="st">"I"</span>, <span class="st">"infection"</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a> <span class="sc">|&gt;</span> <span class="fu">mp_trajectory</span>()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a> <span class="sc">|&gt;</span> <span class="fu">ggplot</span>() </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a> <span class="sc">+</span> <span class="fu">geom_line</span>(<span class="fu">aes</span>(time, value)) </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a> <span class="sc">+</span> <span class="fu">facet_wrap</span>(<span class="sc">~</span> matrix, <span class="at">scales =</span> <span class="st">"free"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a> <span class="sc">+</span> <span class="fu">theme_bw</span>()</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="simulating-per-capita-flows-1" class="slide level2">
+<h2>Simulating Per-Capita Flows</h2>
 
 <img data-src="images/pp.png" width="800" class="r-stretch"></section>
-<section id="specifying-per-capita-flows-4" class="slide level2">
-<h2>Specifying Per-Capita Flows</h2>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>spec <span class="ot">=</span> <span class="fu">mp_tmb_model_spec</span>(</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  ...</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  , <span class="fu">mp_per_capita_flow</span>(<span class="st">"S"</span>, <span class="st">"I"</span>, <span class="st">"beta * I / N"</span>, <span class="st">"infection"</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  , <span class="fu">mp_per_capita_flow</span>(<span class="st">"I"</span>, <span class="st">"R"</span>, <span class="st">"gamma"</span>, <span class="st">"recovery"</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  ...</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-
-<img data-src="images/SIR.drawio.png" width="300" class="r-stretch"></section>
-<section id="specifying-per-capita-flows-5" class="slide level2">
+<section id="specifying-per-capita-flows-3" class="slide level2">
 <h2>Specifying Per-Capita Flows</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>spec <span class="ot">=</span> <span class="fu">mp_tmb_model_spec</span>(</span>
@@ -561,6 +563,18 @@ Steve Walker (McMaster University)
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  , <span class="fu">mp_per_capita_flow</span>(<span class="st">"I"</span>, <span class="st">"R"</span>, <span class="st">"gamma"</span>, <span class="st">"recovery"</span>)</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  ...</span>
 <span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+
+<img data-src="images/SIR.drawio.png" width="300" class="r-stretch"></section>
+<section id="specifying-per-capita-flows-4" class="slide level2">
+<h2>Specifying Per-Capita Flows</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>spec <span class="ot">=</span> <span class="fu">mp_tmb_model_spec</span>(</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  , <span class="fu">mp_per_capita_flow</span>(<span class="st">"S"</span>, <span class="st">"I"</span>, <span class="st">"beta * I / N"</span>, <span class="st">"infection"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  , <span class="fu">mp_per_capita_flow</span>(<span class="st">"I"</span>, <span class="st">"R"</span>, <span class="st">"gamma"</span>, <span class="st">"recovery"</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p><span class="math display">\[
 \begin{align}
@@ -580,10 +594,10 @@ Steve Walker (McMaster University)
 </ul>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mp_euler</span>(spec)             <span class="do">## difference equation (default)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mp_rk4</span>(spec)               <span class="do">## ODE solver</span></span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mp_euler_multinomial</span>(spec) <span class="do">## process error</span></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mp_hazard</span>(spec)            <span class="do">## McMaster group hack during COVID emergency</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mp_euler</span>(spec)             <span class="do">## difference equation (default)</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mp_rk4</span>(spec)               <span class="do">## ODE solver</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mp_euler_multinomial</span>(spec) <span class="do">## process error</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">mp_hazard</span>(spec)            <span class="do">## McMaster group hack during COVID emergency</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 
 <aside><div>
@@ -857,26 +871,26 @@ Steve Walker (McMaster University)
 <section id="small-n-awareness-models-10" class="slide level2">
 <h2>Small-N Awareness Models</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>awareness_model <span class="ot">=</span> <span class="fu">mp_tmb_model_spec</span>(</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  ...</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  , <span class="fu">mp_per_capita_flow</span>(<span class="st">"S"</span>, <span class="st">"E"</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>      , <span class="st">"beta * I / N / (1 + (convolution(death, kernel)/delta_c)^k))"</span></span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      , <span class="st">"infection"</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  ...</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>awareness_model <span class="ot">=</span> <span class="fu">mp_tmb_model_spec</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  , <span class="fu">mp_per_capita_flow</span>(<span class="st">"S"</span>, <span class="st">"E"</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>      , <span class="st">"beta * I / N / (1 + (convolution(death, kernel)/delta_c)^k))"</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>      , <span class="st">"infection"</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="small-n-awareness-models-11" class="slide level2">
 <h2>Small-N Awareness Models</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>importation_awareness_model <span class="ot">=</span> <span class="fu">mp_tmb_insert</span>(awareness_model</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  , <span class="at">expressions =</span> <span class="fu">list</span>(</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>        importation <span class="sc">~</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, importation_prob)</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>      , I <span class="sc">~</span> I <span class="sc">+</span> importation</span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  ...</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>importation_awareness_model <span class="ot">=</span> <span class="fu">mp_tmb_insert</span>(awareness_model</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  , <span class="at">expressions =</span> <span class="fu">list</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>        importation <span class="sc">~</span> <span class="fu">rbinom</span>(<span class="dv">1</span>, importation_prob)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>      , I <span class="sc">~</span> I <span class="sc">+</span> importation</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="small-n-awareness-models-12" class="slide level2">
